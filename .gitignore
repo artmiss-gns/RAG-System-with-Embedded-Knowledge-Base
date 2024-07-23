@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+
+# .vs
+.vs/
+
+# .vscode
+.vscode/
+
+# Virtualenv
+.venv/
+env/
+venv/
+
+# Python upgrade tipps
+.pydev/
+
+# other
+test.ipynb
+Early Iran History.pdf

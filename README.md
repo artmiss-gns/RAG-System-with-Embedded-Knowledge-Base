@@ -1,0 +1,5 @@
+- Getting the PDFs ready
+- preprocessing the data
+    - count of words, count of chars, tokens...
+    - Ingest text -> split it into groups/chunks -> embed the groups/chunks -> use the embeddings
+    - using spaCy
