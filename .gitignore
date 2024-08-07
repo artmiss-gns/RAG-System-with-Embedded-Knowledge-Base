@@ -26,5 +26,6 @@ Early Iran History.pdf
 
 ~
 .DS_Store
-
 .env
+data/chunked_data.csv
+data/text_chunk_embeddings.pkl

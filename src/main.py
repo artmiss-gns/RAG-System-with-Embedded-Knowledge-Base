@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import torch
 from groq import Groq, GroqError
 from sentence_transformers import SentenceTransformer
+import pandas as pd
 
 from src.embedding import Embedder
 from src.preprocessing import Preprocessing
@@ -49,13 +50,25 @@ Answer the following question:
     
     return chat_completion.choices[0].message.content
 
-def run(load_embedding_path=None, save_path=None) :
+def run(
+        load_preprocessed_file=None, save_preprocessed_file=None,
+        load_embedding_path=None, save_path=None
+    ) :
     device = 'mps' if torch.backends.mps.is_available() else 'cpu'
 
     # preprocessing
     pdf_path = Path(input('File path: '))
-    preprocessor = Preprocessing(pdf_path, chunk_size=13)
-    data = preprocessor()
+    if load_preprocessed_file: 
+        data = pd.read_csv(load_preprocessed_file)
+        print("Loading preprocessed data...")
+    else :
+        print("Preprocessing...")
+        preprocessor = Preprocessing(pdf_path, chunk_size=13)
+        data = preprocessor()
+
+    if save_preprocessed_file :
+        print("Saving preprocessed data..")
+        data.to_csv(save_preprocessed_file, index=False)
     
     # embedding
     embedding_model = SentenceTransformer(
@@ -64,8 +77,10 @@ def run(load_embedding_path=None, save_path=None) :
     )
     emb = Embedder(data, embedding_model)
     if load_embedding_path :
+        print("Loading embeddings...")
         emb.load_embedding(load_embedding_path)
     else :
+        print("Embedding...")
         emb.embed()
     
     if save_path :
@@ -87,4 +102,8 @@ def run(load_embedding_path=None, save_path=None) :
 # Load environment variables from .env file
 load_dotenv()
 
-run(load_embedding_path="./data/embeddings.pt")
+run(
+    load_embedding_path="./data/embeddings.pt",
+    load_preprocessed_file='./data/chunked_data.csv',
+    # save_preprocessed_file='./data/chunked_data.csv'
+)

@@ -71,8 +71,12 @@ class Preprocessing:
 
         self.data = chunked_data
 
+    def save_data(self, path: Path):
+        self.data.to_csv(path, index=False)
 
 if __name__ == '__main__':
     pdf_path = Path('./Early Iran History.pdf')
     preprocessor = Preprocessing(pdf_path, chunk_size=13)
+    # preprocessor.save_data(Path('./data/chunked_data.csv'))
     data = preprocessor()
+    
