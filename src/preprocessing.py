@@ -47,6 +47,9 @@ class Preprocessing:
         )
 
     def chunk_data(self):
+        def calculate_chunk_size():
+            data['sentences']
+
         def get_chunk_points(chunk_size, array_length):
             return list(
                 range(chunk_size, array_length + 1, chunk_size)

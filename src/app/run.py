@@ -16,6 +16,9 @@ st.sidebar.title("Configuration")
 # PDF file upload
 uploaded_file = st.sidebar.file_uploader("Upload PDF file", type="pdf")
 
+# Choosing K : (Relevant Documents)
+K = st.sidebar.slider("Number of retrieved relevant documents", min_value=1, max_value=10, value=5)
+
 # LLM model selection
 llm_option = st.sidebar.selectbox("Select LLM model", ["OpenAI", "Anthropic", "Groq"])
 
@@ -52,17 +55,24 @@ if uploaded_file is not None:
         st.session_state.chat_history.append({"role": "human", "content": user_query})
 
         # Preprocess and embed the PDF file if not done already
-        if "preprocessed_data" not in st.session_state or "embeddings" not in st.session_state:
+        if "preprocessed_data" not in st.session_state or "embeddings_model" not in st.session_state:
             with st.spinner("Preprocessing data..."):
                 st.session_state.preprocessed_data = prep_docs(pdf_path)
             with st.spinner("Creating embeddings..."):
-                st.session_state.embeddings = create_embedding(st.session_state.preprocessed_data)
+                st.session_state.embeddings_model = create_embedding(st.session_state.preprocessed_data)
 
         # Get related content
-        context = st.session_state.embeddings.get_related_content(
+        context = st.session_state.embeddings_model.get_related_content(
             query=user_query,
-            k=3
+            k=K
         )
+        
+        # analysis on context 
+        print(context)
+        print("#"*20)
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-mpnet-base-v2")
+        print(f"Token count: {len(tokenizer.encode(context))}")
 
         # Generate response
         with st.spinner("Generating response..."):

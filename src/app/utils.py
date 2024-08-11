@@ -40,7 +40,7 @@ Answer the following question:
             return response.choices[0].message.content.strip()
         except openai.error.OpenAIError as e:
             print(e)
-            return "I'm sorry, I couldn't generate a response at the moment."
+            return e
 
     elif llm_option == "Anthropic":
         try:
@@ -62,7 +62,7 @@ Answer the following question:
             return chat_completion.choices[0].message.content
         except Exception as e:
             print(e)
-            return "I'm sorry, I couldn't generate a response at the moment."
+            return e
 
     elif llm_option == "Groq":
         try:
@@ -80,22 +80,22 @@ Answer the following question:
                 ],
                 model="llama3-groq-70b-8192-tool-use-preview",
                 temperature=0.5,
-                # max_tokens=1000,
+                max_tokens=1024,
                 # stream=True,
             )
             return chat_completion.choices[0].message.content
         except GroqError as e:
             print(e)
-            return "I'm sorry, I couldn't generate a response at the moment."
+            return e
 
-def prep_docs(pdf_path):
+def prep_docs(pdf_path, chunk_size=13):
     print("Preprocessing...")
-    preprocessor = Preprocessing(pdf_path, chunk_size=13)
+    preprocessor = Preprocessing(pdf_path, chunk_size=chunk_size)
     data = preprocessor()
     
     return data
 
-def create_embedding(data):
+def create_embedding(data) -> Embedder:
     embedding_model = SentenceTransformer(
         model_name_or_path="all-mpnet-base-v2", 
         device=device

@@ -56,10 +56,13 @@ class Embedder:
 
     def get_related_content(self, query, k=5):
         score_result = self.get_score(query, k)
+        related_content = []
         for value, index in list(zip(score_result[0].ravel(), score_result[1].ravel())) :
             index = int(index)
-            return self.data.iloc[index]['chunked']
-        
+            related_content.append(self.data.iloc[index]['chunked'])
+
+        return " ".join(related_content)
+    
 
 
 if __name__ == "__main__":
@@ -78,7 +81,7 @@ if __name__ == "__main__":
 
 
     emb = Embedder(data, embedding_model)
-    emb.embed(data=data)
+    emb.embed()
     # emb.load_embedding('./data/embeddings.pt')
     # emb.save_embedding(Path('./data/embeddings.pt'))
     emb.print_related_content(
