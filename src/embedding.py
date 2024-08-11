@@ -36,6 +36,8 @@ class Embedder:
     def get_score(self, query, k):
         query_embedding = self.embedding_model.encode(query, convert_to_tensor=True)
         dot_score = util.dot_score(a=query_embedding, b=self.embeddings)
+        if k > dot_score.shape[1] :
+            k = dot_score.shape[1]
         score_result = torch.topk(
             input=dot_score,
             k=k,
