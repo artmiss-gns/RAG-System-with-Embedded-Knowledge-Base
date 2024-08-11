@@ -2,3 +2,6 @@
 ```bash
 export PYTHONPATH="/$(pwd):$PYTHONPATH"
 ```
+
+#### TODO
+- add history for the chat
